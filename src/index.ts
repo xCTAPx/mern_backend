@@ -19,4 +19,4 @@ app.get("/", (_request, response) => {
   response.send("Hello world!");
 });
 
-app.listen(port, () => console.log(`Server has been started on port ${port}`));
+app.listen(port, () => console.log(`Server has been started. Port: ${port}`));
