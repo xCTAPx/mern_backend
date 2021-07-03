@@ -5,7 +5,7 @@
   "main": "dist/src/index.js",
   "scripts": {
     "test": "test",
-    "dev": "nodemon src/index.js",
+    "dev": "nodemon src/index.ts",
     "start": "node .",
     "build": "tsc",
     "prestart": "npm run build",
@@ -26,7 +26,7 @@
     "body-parser": "^1.19.0",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
-    "log4js": "^6.3.0"
+    "mongoose": "^5.13.1"
   },
   "devDependencies": {
     "@types/express": "^4.17.12",
