@@ -6,8 +6,6 @@ dotenv.config();
 
 const port = process.env.PORT;
 
-alert("test");
-
 const app = express();
 
 app.use(express.json());
