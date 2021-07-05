@@ -6,6 +6,8 @@ dotenv.config();
 
 const port = process.env.PORT;
 
+alert("fsd");
+
 const app = express();
 
 app.use(express.json());
