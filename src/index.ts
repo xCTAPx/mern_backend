@@ -1,22 +1,26 @@
 import express from "express";
 import dotenv from "dotenv";
-import log4js from "log4js";
+import mongoose from "mongoose";
 
 dotenv.config();
-
-const logger = log4js.getLogger();
-logger.level = process.env.LOG_LEVEL;
-
-logger.info("log4js log info");
-logger.debug("log4js log debug");
-logger.error("log4js log error");
 
 const port = process.env.PORT;
 
 const app = express();
 
+app.use(express.json());
+
 app.get("/", (_request, response) => {
   response.send("Hello world!");
 });
 
-app.listen(port, () => console.log(`Server has been started. Port: ${port}`));
+const startApp = async () => {
+  await mongoose.connect(process.env.DB_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+
+  app.listen(port, () => console.log(`Server has been started. Port: ${port}`));
+};
+
+startApp();
