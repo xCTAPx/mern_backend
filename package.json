@@ -1,4 +1,7 @@
 {
+  "engines": {
+    "node": "14.8.0"
+  },
   "name": "mern_backend",
   "version": "0.0.0-alpha.1",
   "description": "Backend part of full-stack js application.",
