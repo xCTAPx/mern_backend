@@ -15,8 +15,7 @@
     "server:watch": "ts-node-dev --respawn --transpile-only src/index.ts",
     "lint:fix": "eslint --cache --ext .ts . --fix",
     "lint": "eslint --cache --ext .ts .",
-    "prebuild": "npm run lint",
-    "prepare": "husky install"
+    "prebuild": "npm run lint"
   },
   "keywords": [
     "mern",
