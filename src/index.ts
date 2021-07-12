@@ -4,14 +4,14 @@ import mongoose from "mongoose";
 
 dotenv.config();
 
-const port = process.env.PORT;
+const port = process.env.PORT || 80;
 
 const app = express();
 
 app.use(express.json());
 
 app.get("/", (_request, response) => {
-  response.send("Hello world!!");
+  response.send("Hello world!");
 });
 
 const startApp = async () => {
