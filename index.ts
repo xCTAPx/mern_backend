@@ -1,6 +1,6 @@
-import express from "express";
-import dotenv from "dotenv";
-import mongoose from "mongoose";
+const express = require("express");
+const dotenv = require("dotenv");
+const mongoose = require("mongoose");
 
 dotenv.config();
 
@@ -15,10 +15,10 @@ app.get("/", (_request, response) => {
 });
 
 const startApp = async () => {
-  // await mongoose.connect(process.env.DB_URL, {
-  //   useNewUrlParser: true,
-  //   useUnifiedTopology: true,
-  // });
+  await mongoose.connect(process.env.DB_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
 
   app.listen(port, () => console.log(`Server has been started. Port: ${port}`));
 };

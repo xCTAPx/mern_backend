@@ -9,9 +9,7 @@
   "scripts": {
     "test": "test",
     "dev": "nodemon src/index.ts",
-    "start": "node .",
-    "build": "tsc",
-    "prestart": "npm run build",
+    "start": "node index.ts",
     "server:watch": "ts-node-dev --respawn --transpile-only src/index.ts",
     "lint:fix": "eslint --cache --ext .ts . --fix",
     "lint": "eslint --cache --ext .ts ."
