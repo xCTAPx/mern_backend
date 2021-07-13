@@ -11,7 +11,9 @@ const app = express();
 app.use(express.json());
 
 app.get("/", (_request, response) => {
-  response.send("Hello world! It is backend part of future app.");
+  response.send(
+    "Hello world! It is backend part of future app. It is in development process now..."
+  );
 });
 
 const startApp = async () => {
