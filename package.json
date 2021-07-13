@@ -8,11 +8,13 @@
   "main": "dist/src/index.js",
   "scripts": {
     "test": "test",
-    "dev": "nodemon src/index.ts",
+    "dev": "nodemon index.ts",
     "start": "node index.ts",
-    "server:watch": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "tsc",
+    "prestart": "npm run build",
     "lint:fix": "eslint --cache --ext .ts . --fix",
-    "lint": "eslint --cache --ext .ts ."
+    "lint": "eslint --cache --ext .ts .",
+    "prebuild": "npm run lint"
   },
   "keywords": [
     "mern",
