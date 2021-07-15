@@ -42,8 +42,7 @@
   },
   "lint-staged": {
     "*.{js,ts}": [
-      "prettier --write",
-      "npm run lint"
+      "prettier --write"
     ]
   },
   "husky": {
