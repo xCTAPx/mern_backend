@@ -11,9 +11,7 @@ const app = express();
 app.use(express.json());
 
 app.get("/", (_request, response) => {
-  response.send(
-    "It is backend part of my app. It is in development process now..."
-  );
+  response.send("Backend part of app in development process now...");
 });
 
 const startApp = async () => {
