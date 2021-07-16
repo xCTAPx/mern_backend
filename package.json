@@ -10,7 +10,8 @@
     "test": "test",
     "dev": "nodemon index.ts",
     "start": "node index.ts",
-    "lint": "eslint index.ts"
+    "lint:fix": "eslint --fix .",
+    "lint": "eslint . --no-error-on-unmatched-pattern"
   },
   "keywords": [
     "mern",
@@ -45,7 +46,7 @@
   "lint-staged": {
     "*.{js,ts}": [
       "prettier --write",
-      "npm run lint"
+      "npm run lint --max-warnings 0"
     ]
   },
   "husky": {

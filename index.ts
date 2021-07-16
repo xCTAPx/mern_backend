@@ -4,9 +4,7 @@ import mongoose from "mongoose";
 
 dotenv.config();
 
-const unused = "";
-
-const port = process.env.PORT || 80;
+const port = process.env.PORT || 5000;
 
 const app = express();
 
@@ -14,7 +12,7 @@ app.use(express.json());
 
 app.get("/", (_request, response) => {
   response.send(
-    "Hello world! It is backend part of future app. It is in development process now... Test..."
+    "Hello world! It is backend part of future app. It is in development process now..."
   );
 });
 
