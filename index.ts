@@ -1,10 +1,10 @@
-const express = require("express");
-const dotenv = require("dotenv");
-const mongoose = require("mongoose");
+import express from "express";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
 
 dotenv.config();
 
-const port = process.env.PORT || 80;
+const port = process.env.PORT || 5000;
 
 const app = express();
 

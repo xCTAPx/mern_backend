@@ -1,19 +1,18 @@
 module.exports = {
-    root: true,
-    parser: 'babel-eslint',
-    env: {
-        "node": true,
-        "commonjs": true
-    },
-    plugins: ['@typescript-eslint'],
-    extends: [
-      'eslint:recommended',
-    ],
-    rules: {
-      quotes: ['error', 'double'],
-      'no-extra-semi': 'error',
-      'no-alert': 'error',
-      semi: ['error', 'always'],
-    },
-  };
-  
+  env: {
+    browser: true,
+    commonjs: true,
+    es2021: true,
+  },
+  ignorePatterns: ["/dist"],
+  extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+  parser: "@typescript-eslint/parser",
+  parserOptions: {
+    ecmaVersion: 12,
+  },
+  plugins: ["@typescript-eslint"],
+  rules: {
+    quotes: ["error", "double"],
+    semi: ["error", "always"],
+  },
+};
