@@ -12,7 +12,7 @@ app.use(express.json());
 
 app.get("/", (_request, response) => {
   response.send(
-    "It is backend part of my app. It is in development process now..."
+    "It is backend part of app. It is in development process now..."
   );
 });
 
