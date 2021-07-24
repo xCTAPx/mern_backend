@@ -16,7 +16,7 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get(`${URL_PREFIX}`, (_request, response) => {
+app.get(`${URL_PREFIX}`, (_request, response): void => {
   response.send("Backend part of application in development process now...");
 });
 

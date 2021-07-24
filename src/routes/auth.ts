@@ -6,4 +6,8 @@ router.post("/create", (req, res) => {
   authController.create(req, res);
 });
 
+router.post("/refresh", (req, res) => {
+  authController.create(req, res);
+});
+
 module.exports = router;
