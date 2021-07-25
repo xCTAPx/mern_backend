@@ -1,3 +1,5 @@
+import { ICreateTokensData, ITokens } from "../types";
+
 const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
 
@@ -8,7 +10,7 @@ type TokenType = "access" | "refresh";
 const JwtSecretAccess = process.env.ACCESS_TOKEN_SECRET;
 const JwtSecretRefresh = process.env.REFRESH_TOKEN_SECRET;
 
-const createToken = (id: string, type: TokenType) => {
+const createToken = (id: string, type: TokenType): string => {
   const accessToken = type === "access";
   const secret = accessToken ? JwtSecretAccess : JwtSecretRefresh;
 
@@ -18,17 +20,13 @@ const createToken = (id: string, type: TokenType) => {
 };
 
 class AuthService {
-  createTokens(req, res) {
-    try {
-      const { id } = req.body;
+  createTokens(data: ICreateTokensData): ITokens {
+    const tokenData = JSON.stringify(data);
 
-      const accessToken = createToken(id, "access");
-      const refreshToken = createToken(id, "refresh");
-      res.json({ accessToken, refreshToken });
-    } catch (e) {
-      console.error("ERROR: ", e.message);
-      res.status(401).json({ message: "Something went wrong" });
-    }
+    const accessToken = createToken(tokenData, "access");
+    const refreshToken = createToken(tokenData, "refresh");
+
+    return { accessToken, refreshToken };
   }
 }
 

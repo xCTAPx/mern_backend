@@ -4,6 +4,7 @@ const express = require("express");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const authRoute = require("./src/routes/auth");
+const cookieParser = require("cookie-parser");
 
 const URL_PREFIX = "/api";
 
@@ -13,8 +14,11 @@ const port = process.env.PORT || 5000;
 
 const app = express();
 
+mongoose.set("useCreateIndex", true);
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cookieParser());
 
 app.get(`${URL_PREFIX}`, (_request, response): void => {
   response.send("Backend part of application in development process now...");
