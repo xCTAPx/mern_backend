@@ -2,14 +2,14 @@ const { Router } = require("express");
 const router = Router();
 const authController = require("../controllers/authentication");
 
-router.post("/registration", (req, res) => authController.register(req, res));
+router.post("/registration", authController.register);
 
-router.post("/login", (req, res) => authController.login(req, res));
+router.post("/login", authController.login);
 
-router.post("/logout", (req, res) => authController.logout(req, res));
+router.post("/logout", authController.logout);
 
-router.get("/activate/:link", (req, res) => authController.activate(req, res));
+router.get("/activate/:link", authController.activate);
 
-router.get("/refresh", (req, res) => authController.refresh(req, res));
+router.get("/refresh", authController.refresh);
 
 module.exports = router;

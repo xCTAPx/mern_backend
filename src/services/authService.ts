@@ -8,12 +8,16 @@ import {
 const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const uuid = require("uuid");
 const UserModel = require("../models/user");
 const TokensModel = require("../models/tokens");
+const ApiError = require("../exceptions/apiError");
 
 dotenv.config();
 
 type TokenType = "access" | "refresh";
+
+const { v4 } = uuid;
 
 const JwtSecretAccess = process.env.ACCESS_TOKEN_SECRET;
 const JwtSecretRefresh = process.env.REFRESH_TOKEN_SECRET;
@@ -31,9 +35,18 @@ class AuthService {
   async createUser(userData: IRegisterData): Promise<IRegisterData> {
     const { email, password, nickname } = userData;
 
+    const candidate = await UserModel.findOne({ email });
+    if (candidate)
+      throw ApiError.BadRequest("User with such email already exists");
+
     const hashPassword = await bcrypt.hash(password, 4);
 
-    const user = new UserModel({ email, password: hashPassword, nickname });
+    const user = new UserModel({
+      email,
+      password: hashPassword,
+      nickname,
+      activationLink: v4(),
+    });
     await user.save();
 
     return user;
@@ -58,11 +71,23 @@ class AuthService {
     return createdTokens;
   }
 
+  async activate(activationLink: string): Promise<void> {
+    const user = await UserModel.findOne({ activationLink });
+    if (!user) throw ApiError.BadRequest("User is not found");
+    user.isActivated = true;
+
+    await user.save();
+  }
+
   async login(data: ILoginData): Promise<boolean> {
     const { email, password } = data;
     const candidate = await UserModel.findOne({ email });
+    if (!candidate)
+      throw ApiError.BadRequest("User with such email is not found");
 
     const equalPassword = await bcrypt.compare(password, candidate.password);
+
+    if (!equalPassword) throw ApiError.BadRequest("Password is wrong");
 
     return equalPassword;
   }

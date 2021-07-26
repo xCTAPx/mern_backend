@@ -1,20 +1,16 @@
 import { ITokens } from "../types";
 
+const dotenv = require("dotenv");
 const authService = require("../services/authService");
-const UserModel = require("../models/user");
+
+dotenv.config();
 
 const MAX_AGE = 30 * 24 * 60 * 60 * 1000;
 
 class Authentication {
-  async register(req, res, _next) {
+  async register(req, res, next) {
     try {
       const { email } = req.body;
-
-      const candidate = await UserModel.findOne({ email });
-      if (candidate)
-        res
-          .status(400)
-          .json({ message: "User with such email already exists" });
 
       const user = await authService.createUser(req.body);
       const tokens: ITokens = await authService.createTokens(
@@ -36,62 +32,42 @@ class Authentication {
         tokens: { accessToken, refreshToken },
       });
     } catch (e) {
-      const { message } = e;
-      console.error("ERROR: ", message);
-
-      res.status(500).json({ message });
+      next(e);
     }
   }
 
-  async login(req, res, _next) {
+  async login(req, res, next) {
     try {
-      const { email } = req.body;
-      const candidate = await UserModel.findOne({ email });
-      if (!candidate)
-        res.status(400).json({ message: "User with such email is not found" });
-
       const success = await authService.login(req.body);
-      if (!success) res.status(400).json({ message: "Password is wrong" });
 
       res.json({ success });
     } catch (e) {
-      const { message } = e;
-      console.error("ERROR: ", message);
-
-      res.status(500).json({ message });
+      next(e);
     }
   }
 
-  logout(req, res, _next) {
+  logout(req, res, next) {
     try {
       res.json({ method: "logout" });
     } catch (e) {
-      const { message } = e;
-      console.error("ERROR: ", message);
-
-      res.status(500).json({ message });
+      next(e);
     }
   }
 
-  activate(req, res, _next) {
+  async activate(req, res, next) {
     try {
-      res.json({ method: "activate" });
+      await authService.activate(req.params.link);
+      res.redirect(process.env.CLIENT_URL);
     } catch (e) {
-      const { message } = e;
-      console.error("ERROR: ", message);
-
-      res.status(500).json({ message });
+      next(e);
     }
   }
 
-  refresh(req, res, _next) {
+  refresh(req, res, next) {
     try {
       res.json({ method: "refresh" });
     } catch (e) {
-      const { message } = e;
-      console.error("ERROR: ", message);
-
-      res.status(500).json({ message });
+      next(e);
     }
   }
 }

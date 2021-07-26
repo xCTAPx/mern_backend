@@ -20,7 +20,7 @@ const userSchema = new Schema({
     type: String,
     default: false,
   },
-  activatedLink: String,
+  activationLink: String,
 });
 
 module.exports = model("User", userSchema);
