@@ -1,52 +1,64 @@
 import { ITokens } from "../types";
 
-const bcrypt = require("bcrypt");
-const authService = require("../services/auth-service");
+const authService = require("../services/authService");
 const UserModel = require("../models/user");
-const TokensModel = require("../models/tokens");
 
 const MAX_AGE = 30 * 24 * 60 * 60 * 1000;
 
 class Authentication {
   async register(req, res, _next) {
     try {
-      const { email, password, nickname } = req.body;
+      const { email } = req.body;
 
-      const hashPassword = await bcrypt.hash(password, 4);
       const candidate = await UserModel.findOne({ email });
+      if (candidate)
+        res
+          .status(400)
+          .json({ message: "User with such email already exists" });
 
-      if (candidate) throw new Error("User with such email already exists");
-
-      const user = new UserModel({ email, password: hashPassword, nickname });
-      await user.save();
-
-      const tokens: ITokens = authService.createTokens(req.body);
-
-      const createdTokens = new TokensModel({ user: user._id, ...tokens });
-      await createdTokens.save();
+      const user = await authService.createUser(req.body);
+      const tokens: ITokens = await authService.createTokens(
+        req.body,
+        user._id
+      );
 
       res.cookie("refreshToken", tokens.refreshToken, {
         maxAge: MAX_AGE,
         httpOnly: true,
       });
 
-      res.json({ email, nickname, id: user._id, tokens });
+      const { accessToken, refreshToken } = tokens;
+
+      res.json({
+        email,
+        nickname: user.nickname,
+        id: user._id,
+        tokens: { accessToken, refreshToken },
+      });
     } catch (e) {
       const { message } = e;
       console.error("ERROR: ", message);
 
-      res.status(400).json({ message });
+      res.status(500).json({ message });
     }
   }
 
-  login(req, res, _next) {
+  async login(req, res, _next) {
     try {
-      res.json({ method: "login" });
+      const { email } = req.body;
+      const candidate = await UserModel.findOne({ email });
+      if (!candidate)
+        res.status(400).json({ message: "User with such email is not found" });
+
+      const success = await authService.login(req.body);
+      if (!success) res.status(400).json({ message: "Password is wrong" });
+
+      res.json({ success });
     } catch (e) {
       const { message } = e;
       console.error("ERROR: ", message);
 
-      res.status(400).json({ message });
+      res.status(500).json({ message });
     }
   }
 
@@ -57,7 +69,7 @@ class Authentication {
       const { message } = e;
       console.error("ERROR: ", message);
 
-      res.status(400).json({ message });
+      res.status(500).json({ message });
     }
   }
 
@@ -68,7 +80,7 @@ class Authentication {
       const { message } = e;
       console.error("ERROR: ", message);
 
-      res.status(400).json({ message });
+      res.status(500).json({ message });
     }
   }
 
@@ -79,7 +91,7 @@ class Authentication {
       const { message } = e;
       console.error("ERROR: ", message);
 
-      res.status(400).json({ message });
+      res.status(500).json({ message });
     }
   }
 }

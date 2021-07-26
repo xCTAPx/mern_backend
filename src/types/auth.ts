@@ -1,17 +1,17 @@
 export interface IRegisterData {
-  mail: string;
+  email: string;
   password: string;
   nickname: string;
 }
 
 export interface ILoginData {
-  mail: string;
+  email: string;
   password: string;
 }
 
 export interface ICreateTokensData {
   id: string;
-  mail: string;
+  email: string;
 }
 
 export interface ITokens {
