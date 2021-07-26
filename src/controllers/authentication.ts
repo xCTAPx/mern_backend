@@ -1,4 +1,4 @@
-import { ITokens } from "../types";
+import { ITokens, IUser } from "../types";
 
 const dotenv = require("dotenv");
 const authService = require("../services/authService");
@@ -38,17 +38,29 @@ class Authentication {
 
   async login(req, res, next) {
     try {
-      const success = await authService.login(req.body);
+      const user: IUser = await authService.login(req.body);
 
-      res.json({ success });
+      const tokens: ITokens = await authService.createTokens(req.body, user.id);
+
+      res.cookie("refreshToken", tokens.refreshToken, {
+        maxAge: MAX_AGE,
+        httpOnly: true,
+      });
+
+      const { accessToken, refreshToken } = tokens;
+
+      res.json({ user, tokens: { accessToken, refreshToken } });
     } catch (e) {
       next(e);
     }
   }
 
-  logout(req, res, next) {
+  async logout(req, res, next) {
     try {
-      res.json({ method: "logout" });
+      const { refreshToken } = req.cookies;
+      await authService.logout(refreshToken);
+      res.clearCookie("refreshToken");
+      return res.end();
     } catch (e) {
       next(e);
     }

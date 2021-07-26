@@ -1,13 +1,19 @@
-interface ApiError {
+interface IApiError extends Error {
   status: number;
+  custom: boolean;
   errors?: Error[];
 }
 
-class ApiError extends Error {
-  constructor(status, message, errors = []) {
+class ApiError extends Error implements IApiError {
+  status: number;
+  custom: boolean;
+  errors?: Error[];
+
+  constructor(status, message, errors = [], custom = true) {
     super(message);
     this.status = status;
     this.errors = errors;
+    this.custom = custom;
   }
 
   static UnauthorizedError() {

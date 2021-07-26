@@ -3,6 +3,7 @@ import {
   ILoginData,
   IRegisterData,
   ITokens,
+  IUser,
 } from "../types";
 
 const dotenv = require("dotenv");
@@ -79,7 +80,7 @@ class AuthService {
     await user.save();
   }
 
-  async login(data: ILoginData): Promise<boolean> {
+  async login(data: ILoginData): Promise<IUser> {
     const { email, password } = data;
     const candidate = await UserModel.findOne({ email });
     if (!candidate)
@@ -89,7 +90,20 @@ class AuthService {
 
     if (!equalPassword) throw ApiError.BadRequest("Password is wrong");
 
-    return equalPassword;
+    return {
+      id: candidate._id,
+      email,
+      nickname: candidate.nickname,
+      isActivated: candidate.isActivated,
+    };
+  }
+
+  async logout(refreshToken: string) {
+    const token = await TokensModel.findOne({ refreshToken });
+
+    if (!token) throw ApiError.BadRequest("User is not authorized");
+
+    await TokensModel.deleteOne({ refreshToken });
   }
 }
 
