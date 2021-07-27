@@ -1,3 +1,5 @@
+export {}; // for avoiding ts-nodejs error (Cannot redeclare block-scoped variable ...)
+
 import {
   ICreateTokensData,
   ILoginData,
@@ -105,12 +107,33 @@ class AuthService {
     };
   }
 
-  async logout(refreshToken: string) {
+  async logout(refreshToken: string): Promise<void> {
     const token = await TokensModel.findOne({ refreshToken });
 
     if (!token) throw ApiError.BadRequest("User is not authorized");
 
     await TokensModel.deleteOne({ refreshToken });
+  }
+
+  async verifyToken(token: string, type: TokenType): Promise<void> {
+    try {
+      const secret =
+        type === "access"
+          ? process.env.ACCESS_TOKEN_SECRET
+          : process.env.REFRESH_TOKEN_SECRET;
+
+      await jwt.verify(token, secret);
+    } catch (e) {
+      throw ApiError.UnauthorizedError();
+    }
+  }
+
+  async refresh(refreshToken: string): Promise<IUser> {
+    const tokens = await TokensModel.findOne({ refreshToken });
+    const user = await UserModel.findById(tokens.user);
+    await TokensModel.deleteOne({ refreshToken });
+
+    return user;
   }
 }
 

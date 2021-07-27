@@ -75,9 +75,20 @@ class Authentication {
     }
   }
 
-  refresh(req, res, next) {
+  async refresh(req, res, next) {
     try {
-      res.json({ method: "refresh" });
+      const { refreshToken } = req.cookies;
+
+      await authService.verifyToken(refreshToken, "refresh");
+      const user: IUser = await authService.refresh(refreshToken);
+
+      const tokens: ITokens = await authService.createTokens(req.body, user.id);
+
+      res.cookie("refreshToken", tokens.refreshToken, {
+        maxAge: MAX_AGE,
+        httpOnly: true,
+      });
+      res.json(user);
     } catch (e) {
       next(e);
     }

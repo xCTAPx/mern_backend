@@ -17,7 +17,7 @@ const userSchema = new Schema({
     required: true,
   },
   isActivated: {
-    type: String,
+    type: Boolean,
     default: false,
   },
   activationLink: String,
