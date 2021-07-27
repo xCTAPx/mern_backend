@@ -13,6 +13,7 @@ const uuid = require("uuid");
 const UserModel = require("../models/user");
 const TokensModel = require("../models/tokens");
 const ApiError = require("../exceptions/apiError");
+const mailService = require("../services/mailService");
 
 dotenv.config();
 
@@ -48,7 +49,13 @@ class AuthService {
       nickname,
       activationLink: v4(),
     });
+
     await user.save();
+
+    await mailService.sendActivationLink(
+      email,
+      `${process.env.SERVER_URL}/api/auth/activate/${user.activationLink}`
+    );
 
     return user;
   }
