@@ -22,14 +22,23 @@
   "author": "Vadim Mechiev <sudkurve@mail.ru>",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.0.1",
+    "cookie-parser": "^1.4.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "express-validator": "^6.12.1",
+    "jsonwebtoken": "^8.5.1",
     "lint-staged": "^11.0.0",
     "mongoose": "^5.13.1",
-    "prettier": "^2.3.2"
+    "nodemailer": "^6.6.3",
+    "prettier": "^2.3.2",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@types/express": "^4.17.12",
+    "@types/express": "^4.17.13",
+    "@types/express-validator": "^3.0.0",
+    "@types/nodemailer": "^6.4.4",
+    "@types/uuid": "^8.3.1",
     "@typescript-eslint/eslint-plugin": "^4.28.3",
     "@typescript-eslint/parser": "^4.28.3",
     "eslint": "^7.30.0",
