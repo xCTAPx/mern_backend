@@ -1,8 +1,6 @@
-export {}; // for avoiding ts-nodejs error (Cannot redeclare block-scoped variable ...)
-
 import { Transporter } from "nodemailer";
-const nodemailer = require("nodemailer");
-const dotenv = require("dotenv");
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -12,7 +10,7 @@ class MailService {
   constructor() {
     this.transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
-      port: process.env.SMTP_PORT,
+      port: Number(process.env.SMTP_PORT),
       secure: false,
       auth: {
         user: process.env.SMTP_USER,
@@ -35,4 +33,4 @@ class MailService {
   }
 }
 
-module.exports = new MailService();
+export default new MailService();

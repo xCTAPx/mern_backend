@@ -1,13 +1,10 @@
-export {}; // for avoiding ts-nodejs error (Cannot redeclare block-scoped variable ...)
-
 import { Request, Response } from "express";
-
-const express = require("express");
-const dotenv = require("dotenv");
-const mongoose = require("mongoose");
-const cookieParser = require("cookie-parser");
-const authRoute = require("./src/routes/auth");
-const errorMiddleware = require("./src/middlewares/errors-middleware");
+import express from "express";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+import cookieParser from "cookie-parser";
+import authRoute from "./routes/auth";
+import errorMiddleware from "./middlewares/errors-middleware";
 
 const URL_PREFIX = "/api";
 

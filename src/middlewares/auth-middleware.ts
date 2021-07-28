@@ -1,9 +1,12 @@
-export {}; // for avoiding ts-nodejs error (Cannot redeclare block-scoped variable ...)
+import { Request, Response, NextFunction } from "express";
+import ApiError from "../exceptions/apiError";
+import authService from "../services/authService";
 
-const ApiError = require("../exceptions/apiError");
-const authService = require("../services/authService");
-
-module.exports = async function (req, _res, next) {
+export default async function (
+  req: Request,
+  _res: Response,
+  next: NextFunction
+): Promise<NextFunction | void> {
   try {
     const authHeader = req.headers.authorization;
 
@@ -18,4 +21,4 @@ module.exports = async function (req, _res, next) {
   } catch (e) {
     return next(ApiError.UnauthorizedError());
   }
-};
+}

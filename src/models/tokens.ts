@@ -1,6 +1,5 @@
-export {}; // for avoiding ts-nodejs error (Cannot redeclare block-scoped variable ...)
-
-const { Schema, model } = require("mongoose");
+import { Schema, model } from "mongoose";
+import { TokensModel } from "../types";
 
 const tokensSchema = new Schema({
   accessToken: {
@@ -14,7 +13,8 @@ const tokensSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
     ref: "User",
+    required: true,
   },
 });
 
-module.exports = model("Tokens", tokensSchema);
+export default model<TokensModel>("Tokens", tokensSchema);

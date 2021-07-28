@@ -8,6 +8,3 @@
 
 # production
 /dist
-
-# misc
-.env

@@ -1,10 +1,8 @@
-export {}; // for avoiding ts-nodejs error (Cannot redeclare block-scoped variable ...)
-
-const { body } = require("express-validator");
+import { body } from "express-validator";
 
 const passwordRegExp = /^[a-zA-Z0-9!@#$%^&*)(+=._-]+$/g;
 
-module.exports = {
+export default {
   emailValidator: body("email")
     .isEmail()
     .normalizeEmail()

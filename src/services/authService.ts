@@ -1,28 +1,23 @@
-export {}; // for avoiding ts-nodejs error (Cannot redeclare block-scoped variable ...)
-
+import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import { v4 } from "uuid";
+import UserModel from "../models/user";
+import TokensModel from "../models/tokens";
+import ApiError from "../exceptions/apiError";
+import mailService from "../services/mailService";
+import UserDto from "../dtos/userDto";
 import {
   ICreateTokensData,
   ILoginData,
   IRegisterData,
   ITokens,
-  IUser,
+  UserModel as UserModelType,
 } from "../types";
-
-const dotenv = require("dotenv");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-const uuid = require("uuid");
-const UserModel = require("../models/user");
-const TokensModel = require("../models/tokens");
-const ApiError = require("../exceptions/apiError");
-const mailService = require("../services/mailService");
-const UserDto = require("../dtos/userDto");
 
 dotenv.config();
 
 type TokenType = "access" | "refresh";
-
-const { v4 } = uuid;
 
 const JwtSecretAccess = process.env.ACCESS_TOKEN_SECRET;
 const JwtSecretRefresh = process.env.REFRESH_TOKEN_SECRET;
@@ -37,7 +32,7 @@ const createToken = (data: string, type: TokenType): string => {
 };
 
 class AuthService {
-  async createUser(userData: IRegisterData): Promise<IRegisterData> {
+  async createUser(userData: IRegisterData): Promise<UserDto> {
     const { email, password, passwordConfirmation, nickname } = userData;
 
     const candidate = await UserModel.findOne({ email });
@@ -49,18 +44,20 @@ class AuthService {
 
     const hashPassword = await bcrypt.hash(password, 4);
 
+    const activationLink = v4();
+
     const user = new UserModel({
       email,
       password: hashPassword,
       nickname,
-      activationLink: v4(),
+      activationLink,
     });
 
     await user.save();
 
     await mailService.sendActivationLink(
       email,
-      `${process.env.SERVER_URL}/api/auth/activate/${user.activationLink}`
+      `${process.env.SERVER_URL}/api/auth/activate/${activationLink}`
     );
 
     return new UserDto(user);
@@ -99,7 +96,7 @@ class AuthService {
     await user.save();
   }
 
-  async login(data: ILoginData): Promise<IUser> {
+  async login(data: ILoginData): Promise<UserDto> {
     const { email, password } = data;
     const candidate = await UserModel.findOne({ email });
     if (!candidate)
@@ -136,7 +133,7 @@ class AuthService {
     }
   }
 
-  async refresh(refreshToken: string): Promise<IUser> {
+  async refresh(refreshToken: string): Promise<UserModelType> {
     const tokens = await TokensModel.findOne({ refreshToken });
     const user = await UserModel.findById(tokens.user);
     await TokensModel.deleteOne({ refreshToken });
@@ -145,4 +142,4 @@ class AuthService {
   }
 }
 
-module.exports = new AuthService();
+export default new AuthService();
