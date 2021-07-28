@@ -23,10 +23,7 @@ class Authentication {
       validateEmail(req);
 
       const user = await authService.createUser(req.body);
-      const tokens: ITokens = await authService.createTokens(
-        req.body,
-        user._id
-      );
+      const tokens: ITokens = await authService.createTokens(req.body, user.id);
 
       res.cookie("refreshToken", tokens.refreshToken, {
         maxAge: MAX_AGE,
