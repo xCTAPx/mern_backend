@@ -2,6 +2,8 @@ export {}; // for avoiding ts-nodejs error (Cannot redeclare block-scoped variab
 
 const { body } = require("express-validator");
 
+const passwordRegExp = /^[a-zA-Z0-9!@#$%^&*)(+=._-]+$/g;
+
 module.exports = {
   emailValidator: body("email")
     .isEmail()
@@ -12,5 +14,9 @@ module.exports = {
     .withMessage("Nickname must be at least 5 chars long"),
   passwordValidator: body("password")
     .isLength({ min: 8 })
-    .withMessage("Password must be at least 8 chars long"),
+    .withMessage("Password must be at least 8 chars long")
+    .custom((value: string) => value.match(passwordRegExp))
+    .withMessage(
+      "Password must include spec symbols, latin characters or numbers only"
+    ),
 };

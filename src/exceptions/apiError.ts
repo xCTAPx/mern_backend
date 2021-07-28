@@ -16,11 +16,11 @@ class ApiError extends Error implements IApiError {
     this.custom = custom;
   }
 
-  static UnauthorizedError() {
+  static UnauthorizedError(): IApiError {
     return new ApiError(401, "User unauthorized");
   }
 
-  static BadRequest(message, errors) {
+  static BadRequest(message: string, errors: Error[]): IApiError {
     return new ApiError(400, message, errors);
   }
 }

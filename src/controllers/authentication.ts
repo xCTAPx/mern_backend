@@ -1,5 +1,5 @@
 import { ITokens, IUser } from "../types";
-import { Request } from "express";
+import { Request, Response } from "express";
 
 const dotenv = require("dotenv");
 const { validationResult } = require("express-validator");
@@ -13,16 +13,14 @@ const MAX_AGE = 30 * 24 * 60 * 60 * 1000;
 const validateEmail = (req: Request): void => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    throw ApiError.BadRequest(errors.errors[0].msg);
+    throw ApiError.BadRequest(errors.errors[0].msg, errors);
   }
 };
 
 class Authentication {
-  async register(req, res, next) {
+  async register(req: Request, res: Response, next): Promise<void> {
     try {
       validateEmail(req);
-
-      const { email } = req.body;
 
       const user = await authService.createUser(req.body);
       const tokens: ITokens = await authService.createTokens(
@@ -38,9 +36,7 @@ class Authentication {
       const { accessToken, refreshToken } = tokens;
 
       res.json({
-        email,
-        nickname: user.nickname,
-        id: user._id,
+        user,
         tokens: { accessToken, refreshToken },
       });
     } catch (e) {
@@ -48,7 +44,7 @@ class Authentication {
     }
   }
 
-  async login(req, res, next) {
+  async login(req: Request, res: Response, next): Promise<void> {
     try {
       validateEmail(req);
 
@@ -71,7 +67,7 @@ class Authentication {
     }
   }
 
-  async logout(req, res, next) {
+  async logout(req: Request, res: Response, next): Promise<void> {
     try {
       const { refreshToken } = req.cookies;
       await authService.logout(refreshToken);
@@ -82,7 +78,7 @@ class Authentication {
     }
   }
 
-  async activate(req, res, next) {
+  async activate(req: Request, res: Response, next): Promise<void> {
     try {
       await authService.activate(req.params.link);
       res.redirect(process.env.CLIENT_URL);
@@ -91,7 +87,7 @@ class Authentication {
     }
   }
 
-  async refresh(req, res, next) {
+  async refresh(req: Request, res: Response, next): Promise<void> {
     try {
       const { refreshToken } = req.cookies;
 
@@ -107,17 +103,20 @@ class Authentication {
         httpOnly: true,
       });
       res.json({
-        user,
-        tokens: { accessToken, refreshToken: newRefreshToken },
+        accessToken,
+        refreshToken: newRefreshToken,
       });
     } catch (e) {
       next(e);
     }
   }
 
-  checkAccess(_req, res, next) {
+  checkAccess(_req: Request, res: Response, next): void {
     try {
-      res.json({ access: true });
+      res.json({
+        access: true,
+        env_test: process.env.ENV_VARS_TEST || false,
+      });
     } catch (e) {
       next(e);
     }

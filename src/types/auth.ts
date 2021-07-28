@@ -1,16 +1,19 @@
 export interface IRegisterData {
   email: string;
   password: string;
+  passwordConfirmation: string;
   nickname: string;
 }
 
 export interface ILoginData {
   email: string;
   password: string;
+  isActivated: boolean;
 }
 
 export interface ICreateTokensData {
-  id: string;
+  password: string;
+  nickname: string;
   email: string;
 }
 

@@ -16,6 +16,7 @@ const UserModel = require("../models/user");
 const TokensModel = require("../models/tokens");
 const ApiError = require("../exceptions/apiError");
 const mailService = require("../services/mailService");
+const UserDto = require("../dtos/userDto");
 
 dotenv.config();
 
@@ -26,22 +27,25 @@ const { v4 } = uuid;
 const JwtSecretAccess = process.env.ACCESS_TOKEN_SECRET;
 const JwtSecretRefresh = process.env.REFRESH_TOKEN_SECRET;
 
-const createToken = (id: string, type: TokenType): string => {
+const createToken = (data: string, type: TokenType): string => {
   const accessToken = type === "access";
   const secret = accessToken ? JwtSecretAccess : JwtSecretRefresh;
 
-  return jwt.sign({ data: id }, secret, {
+  return jwt.sign({ data }, secret, {
     expiresIn: accessToken ? "1h" : "30d",
   });
 };
 
 class AuthService {
   async createUser(userData: IRegisterData): Promise<IRegisterData> {
-    const { email, password, nickname } = userData;
+    const { email, password, passwordConfirmation, nickname } = userData;
 
     const candidate = await UserModel.findOne({ email });
     if (candidate)
-      throw ApiError.BadRequest("User with such email already exists");
+      throw ApiError.BadRequest("User with such email already exists", []);
+
+    if (passwordConfirmation !== password)
+      throw ApiError.BadRequest("Password confirmation is wrong", []);
 
     const hashPassword = await bcrypt.hash(password, 4);
 
@@ -59,14 +63,16 @@ class AuthService {
       `${process.env.SERVER_URL}/api/auth/activate/${user.activationLink}`
     );
 
-    return user;
+    return new UserDto(user);
   }
 
   async createTokens(
     data: ICreateTokensData,
     userId: string
   ): Promise<ITokens> {
-    const tokenData = JSON.stringify(data);
+    const { email, nickname } = data;
+    const userInfo = { userId, email, nickname };
+    const tokenData = JSON.stringify(userInfo);
 
     const accessToken = createToken(tokenData, "access");
     const refreshToken = createToken(tokenData, "refresh");
@@ -87,7 +93,7 @@ class AuthService {
 
   async activate(activationLink: string): Promise<void> {
     const user = await UserModel.findOne({ activationLink });
-    if (!user) throw ApiError.BadRequest("User is not found");
+    if (!user) throw ApiError.BadRequest("User is not found", []);
     user.isActivated = true;
 
     await user.save();
@@ -97,24 +103,22 @@ class AuthService {
     const { email, password } = data;
     const candidate = await UserModel.findOne({ email });
     if (!candidate)
-      throw ApiError.BadRequest("User with such email is not found");
+      throw ApiError.BadRequest("User with such email is not found", []);
+
+    if (!candidate.isActivated)
+      throw ApiError.BadRequest("Account is not activated", []);
 
     const equalPassword = await bcrypt.compare(password, candidate.password);
 
-    if (!equalPassword) throw ApiError.BadRequest("Password is wrong");
+    if (!equalPassword) throw ApiError.BadRequest("Password is wrong", []);
 
-    return {
-      id: candidate._id,
-      email,
-      nickname: candidate.nickname,
-      isActivated: candidate.isActivated,
-    };
+    return new UserDto(candidate);
   }
 
   async logout(refreshToken: string): Promise<void> {
     const token = await TokensModel.findOne({ refreshToken });
 
-    if (!token) throw ApiError.BadRequest("User is not authorized");
+    if (!token) throw ApiError.BadRequest("User is not authorized", []);
 
     await TokensModel.deleteOne({ refreshToken });
   }
