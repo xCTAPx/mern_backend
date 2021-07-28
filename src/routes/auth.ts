@@ -1,12 +1,11 @@
-const { Router } = require("express");
-const {
-  emailValidator,
-  passwordValidator,
-  nicknameValidator,
-} = require("../validation/authValidatiors");
+import { Router } from "express";
+import validators from "../validation/authValidatiors";
+import authController from "../controllers/authentication";
+import authMiddleware from "../middlewares/auth-middleware";
+
 const router = Router();
-const authController = require("../controllers/authentication");
-const authMiddleware = require("../middlewares/auth-middleware");
+
+const { emailValidator, passwordValidator, nicknameValidator } = validators;
 
 router.post(
   "/registration",
@@ -26,4 +25,4 @@ router.get("/refresh", authController.refresh);
 
 router.get("/checkAccess", authMiddleware, authController.checkAccess); // route for checking authorization functionality
 
-module.exports = router;
+export default router;

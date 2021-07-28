@@ -1,6 +1,5 @@
-export {}; // for avoiding ts-nodejs error (Cannot redeclare block-scoped variable ...)
-
-const { Schema, model } = require("mongoose");
+import { Schema, model } from "mongoose";
+import { UserModel } from "../types";
 
 const userSchema = new Schema({
   email: {
@@ -23,4 +22,4 @@ const userSchema = new Schema({
   activationLink: String,
 });
 
-module.exports = model("User", userSchema);
+export default model<UserModel>("User", userSchema);

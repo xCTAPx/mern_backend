@@ -22,9 +22,7 @@ export interface ITokens {
   refreshToken: string;
 }
 
-export interface IUser {
-  id: string;
-  email: string;
-  nickname: string;
-  isActivated: boolean;
-}
+export type UserClient = Omit<
+  IRegisterData,
+  "password" | "passwordConfirmation"
+> & { id: string };

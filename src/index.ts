@@ -1,0 +1,43 @@
+import { Request, Response } from "express";
+import express from "express";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+import cookieParser from "cookie-parser";
+import authRoute from "./routes/auth";
+import errorMiddleware from "./middlewares/errors-middleware";
+
+const URL_PREFIX = "/api";
+
+dotenv.config();
+
+const port = process.env.PORT || 5000;
+
+const app = express();
+
+mongoose.set("useCreateIndex", true);
+
+// external middlewares
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cookieParser());
+
+// routes
+app.use(`${URL_PREFIX}/auth`, authRoute);
+
+// internal middlewares
+app.use(errorMiddleware);
+
+app.get(`${URL_PREFIX}`, (_request: Request, response: Response): void => {
+  response.send("Backend part of application in development process now...");
+});
+
+const startApp = async () => {
+  await mongoose.connect(process.env.DB_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+
+  app.listen(port, () => console.log(`Server has been started. Port: ${port}`));
+};
+
+startApp();

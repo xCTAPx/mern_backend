@@ -1,10 +1,9 @@
-import { ITokens, IUser } from "../types";
-import { Request, Response } from "express";
-
-const dotenv = require("dotenv");
-const { validationResult } = require("express-validator");
-const authService = require("../services/authService");
-const ApiError = require("../exceptions/apiError");
+import { Request, Response, NextFunction } from "express";
+import dotenv from "dotenv";
+import { validationResult } from "express-validator";
+import { ITokens } from "../types";
+import authService from "../services/authService";
+import ApiError from "../exceptions/apiError";
 
 dotenv.config();
 
@@ -12,14 +11,20 @@ const MAX_AGE = 30 * 24 * 60 * 60 * 1000;
 
 const validateEmail = (req: Request): void => {
   const errors = validationResult(req);
+  console.log("ERRORS:", errors.isEmpty());
   if (!errors.isEmpty()) {
-    throw ApiError.BadRequest(errors.errors[0].msg, errors);
+    throw ApiError.BadRequest(errors.array()[0].msg, []);
   }
 };
 
 class Authentication {
-  async register(req: Request, res: Response, next): Promise<void> {
+  async register(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
+      console.log("TRY");
       validateEmail(req);
 
       const user = await authService.createUser(req.body);
@@ -41,11 +46,11 @@ class Authentication {
     }
   }
 
-  async login(req: Request, res: Response, next): Promise<void> {
+  async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       validateEmail(req);
 
-      const user: IUser = await authService.login(req.body);
+      const user = await authService.login(req.body);
 
       await authService.deleteTokensByUser(user.id);
 
@@ -64,7 +69,7 @@ class Authentication {
     }
   }
 
-  async logout(req: Request, res: Response, next): Promise<void> {
+  async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { refreshToken } = req.cookies;
       await authService.logout(refreshToken);
@@ -75,7 +80,11 @@ class Authentication {
     }
   }
 
-  async activate(req: Request, res: Response, next): Promise<void> {
+  async activate(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       await authService.activate(req.params.link);
       res.redirect(process.env.CLIENT_URL);
@@ -84,12 +93,16 @@ class Authentication {
     }
   }
 
-  async refresh(req: Request, res: Response, next): Promise<void> {
+  async refresh(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       const { refreshToken } = req.cookies;
 
       await authService.verifyToken(refreshToken, "refresh");
-      const user: IUser = await authService.refresh(refreshToken);
+      const user = await authService.refresh(refreshToken);
 
       const tokens: ITokens = await authService.createTokens(req.body, user.id);
 
@@ -108,7 +121,7 @@ class Authentication {
     }
   }
 
-  checkAccess(_req: Request, res: Response, next): void {
+  checkAccess(_req: Request, res: Response, next: NextFunction): void {
     try {
       res.json({
         access: true,
@@ -120,4 +133,4 @@ class Authentication {
   }
 }
 
-module.exports = new Authentication();
+export default new Authentication();

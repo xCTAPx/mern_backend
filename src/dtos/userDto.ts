@@ -1,4 +1,4 @@
-import { IUser } from "../types";
+import { UserModel } from "../types";
 
 class UserDto {
   email: string;
@@ -6,7 +6,7 @@ class UserDto {
   id: string;
   isActivated: boolean;
 
-  constructor(model: IUser) {
+  constructor(model: UserModel) {
     this.email = model.email;
     this.nickname = model.nickname;
     this.id = model.id;
@@ -14,4 +14,4 @@ class UserDto {
   }
 }
 
-module.exports = UserDto;
+export default UserDto;
