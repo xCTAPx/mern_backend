@@ -10,7 +10,7 @@
     "test": "test",
     "build": "tsc",
     "tsc": "./node_modules/typescript/bin/tsc",
-    "prestart": "npm run build",
+    "postinstall": "npm run build",
     "dev": "nodemon src/index.ts",
     "start": "node .",
     "lint:fix": "eslint --fix .",
