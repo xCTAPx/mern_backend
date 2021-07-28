@@ -1,5 +1,7 @@
 export {}; // for avoiding ts-nodejs error (Cannot redeclare block-scoped variable ...)
 
+import { Request, Response } from "express";
+
 const express = require("express");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
@@ -28,7 +30,7 @@ app.use(`${URL_PREFIX}/auth`, authRoute);
 // internal middlewares
 app.use(errorMiddleware);
 
-app.get(`${URL_PREFIX}`, (_request, response): void => {
+app.get(`${URL_PREFIX}`, (_request: Request, response: Response): void => {
   response.send("Backend part of application in development process now...");
 });
 

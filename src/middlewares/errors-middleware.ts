@@ -1,5 +1,3 @@
-export {}; // for avoiding ts-nodejs error (Cannot redeclare block-scoped variable ...)
-
 module.exports = function (err, _req, res, _next) {
   console.error(err);
 

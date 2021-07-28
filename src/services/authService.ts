@@ -81,6 +81,10 @@ class AuthService {
     return createdTokens;
   }
 
+  async deleteTokensByUser(userId: string): Promise<void> {
+    await TokensModel.deleteMany({ user: userId });
+  }
+
   async activate(activationLink: string): Promise<void> {
     const user = await UserModel.findOne({ activationLink });
     if (!user) throw ApiError.BadRequest("User is not found");
