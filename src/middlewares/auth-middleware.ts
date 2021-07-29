@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from "express";
-import ApiError from "../exceptions/apiError";
-import authService from "../services/authService";
+import { ApiError } from "../exceptions";
+import { authService } from "../services";
 
-export default async function (
+export const authMiddleware = async (
   req: Request,
   _res: Response,
   next: NextFunction
-): Promise<NextFunction | void> {
+): Promise<NextFunction | void> => {
   try {
     const authHeader = req.headers.authorization;
 
@@ -21,4 +21,4 @@ export default async function (
   } catch (e) {
     return next(ApiError.UnauthorizedError());
   }
-}
+};

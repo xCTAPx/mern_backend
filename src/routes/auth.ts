@@ -1,11 +1,11 @@
 import { Router } from "express";
-import validators from "../validation/authValidatiors";
-import authController from "../controllers/authentication";
-import authMiddleware from "../middlewares/auth-middleware";
+import { VALIDATORS } from "../validation";
+import { authController } from "../controllers";
+import { authMiddleware } from "../middlewares";
 
 const router = Router();
 
-const { emailValidator, passwordValidator, nicknameValidator } = validators;
+const { emailValidator, passwordValidator, nicknameValidator } = VALIDATORS;
 
 router.post(
   "/registration",
@@ -25,4 +25,4 @@ router.get("/refresh", authController.refresh);
 
 router.get("/checkAccess", authMiddleware, authController.checkAccess); // route for checking authorization functionality
 
-export default router;
+export const authRoute = router;

@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from "express";
-import ApiError from "../exceptions/apiError";
+import { ApiError } from "../exceptions";
 
-export default function (
+export const errorsMiddleware = (
   err: any,
   _req: Request,
   res: Response,
   _next: NextFunction
-): Response<string, Record<string, string>> {
+): Response<string, Record<string, string>> => {
   console.error(err);
 
   const { message, errors } = err;
@@ -17,4 +17,4 @@ export default function (
     return res.status(err.status).json(response);
   }
   return res.status(500).json({ message: `Unhandled error: ${message}` });
-}
+};

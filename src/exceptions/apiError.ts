@@ -1,6 +1,6 @@
 import { ValidationError } from "express-validator";
 
-class ApiError extends Error {
+export class ApiError extends Error {
   status: number;
   errors?: Error[] | ValidationError[];
 
@@ -22,5 +22,3 @@ class ApiError extends Error {
     return new ApiError(400, message, errors);
   }
 }
-
-export default ApiError;

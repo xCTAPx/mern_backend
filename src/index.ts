@@ -1,10 +1,10 @@
-import { Request, Response } from "express";
-import express from "express";
+import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
-import authRoute from "./routes/auth";
-import errorMiddleware from "./middlewares/errors-middleware";
+import { authRoute } from "./routes";
+import { errorsMiddleware } from "./middlewares";
+import { mode } from "./utils";
 
 const URL_PREFIX = "/api";
 
@@ -25,10 +25,12 @@ app.use(cookieParser());
 app.use(`${URL_PREFIX}/auth`, authRoute);
 
 // internal middlewares
-app.use(errorMiddleware);
+app.use(errorsMiddleware);
 
 app.get("/", (_request: Request, response: Response): void => {
-  response.send("Backend part of application in development process now...");
+  response.send(
+    `Backend part of application in development process now... (${mode} mode)`
+  );
 });
 
 const startApp = async () => {

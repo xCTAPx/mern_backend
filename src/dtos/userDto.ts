@@ -1,17 +1,15 @@
-import { UserModel } from "../types";
+import { UserModelType } from "../types";
 
-class UserDto {
+export class UserDto {
   email: string;
   nickname: string;
   id: string;
   isActivated: boolean;
 
-  constructor(model: UserModel) {
+  constructor(model: UserModelType) {
     this.email = model.email;
     this.nickname = model.nickname;
     this.id = model.id;
     this.isActivated = model.isActivated;
   }
 }
-
-export default UserDto;

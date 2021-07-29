@@ -1,5 +1,4 @@
-import { Transporter } from "nodemailer";
-import nodemailer from "nodemailer";
+import nodemailer, { Transporter } from "nodemailer";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -33,4 +32,4 @@ class MailService {
   }
 }
 
-export default new MailService();
+export const mailService = new MailService();

@@ -2,17 +2,16 @@ import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { v4 } from "uuid";
-import UserModel from "../models/user";
-import TokensModel from "../models/tokens";
-import ApiError from "../exceptions/apiError";
-import mailService from "../services/mailService";
-import UserDto from "../dtos/userDto";
+import { UserModel, TokensModel } from "../models";
+import { ApiError } from "../exceptions";
+import { mailService } from "../services";
+import { UserDto } from "../dtos";
 import {
   ICreateTokensData,
   ILoginData,
   IRegisterData,
   ITokens,
-  UserModel as UserModelType,
+  UserModelType,
 } from "../types";
 
 dotenv.config();
@@ -142,4 +141,4 @@ class AuthService {
   }
 }
 
-export default new AuthService();
+export const authService = new AuthService();

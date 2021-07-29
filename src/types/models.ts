@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-export type UserModel = mongoose.Document & {
+export type UserModelType = mongoose.Document & {
   email: string;
   password: string;
   nickname: string;
@@ -8,7 +8,7 @@ export type UserModel = mongoose.Document & {
   activationLink?: string;
 };
 
-export type TokensModel = mongoose.Document & {
+export type TokensModelType = mongoose.Document & {
   accessToken: string;
   refreshToken: string;
   user: string;

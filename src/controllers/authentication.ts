@@ -1,9 +1,9 @@
-import { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
+import { Request, Response, NextFunction } from "express";
 import { validationResult } from "express-validator";
+import { authService } from "../services";
+import { ApiError } from "../exceptions";
 import { ITokens } from "../types";
-import authService from "../services/authService";
-import ApiError from "../exceptions/apiError";
 
 dotenv.config();
 
@@ -125,7 +125,6 @@ class Authentication {
     try {
       res.json({
         access: true,
-        env_test: process.env.ENV_VARS_TEST || false,
       });
     } catch (e) {
       next(e);
@@ -133,4 +132,4 @@ class Authentication {
   }
 }
 
-export default new Authentication();
+export const authController = new Authentication();

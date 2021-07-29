@@ -2,7 +2,7 @@ import { body } from "express-validator";
 
 const passwordRegExp = /^[a-zA-Z0-9!@#$%^&*)(+=._-]+$/g;
 
-export default {
+export const VALIDATORS = {
   emailValidator: body("email")
     .isEmail()
     .normalizeEmail()
