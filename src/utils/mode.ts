@@ -1,6 +1,6 @@
-export const isProduction = process.env.MODE === "production";
+export const isProduction = process.env.NODE_ENV === "production";
 
 export const isDevelopment =
-  process.env.MODE === undefined || process.env.MODE === "development";
+  process.env.NODE_ENV === undefined || process.env.NODE_ENV === "development";
 
 export const mode = isProduction ? "production" : "development";
