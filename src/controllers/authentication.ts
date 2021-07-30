@@ -11,7 +11,7 @@ const MAX_AGE = 30 * 24 * 60 * 60 * 1000;
 
 const validateEmail = (req: Request): void => {
   const errors = validationResult(req);
-  console.log("ERRORS:", errors.isEmpty());
+
   if (!errors.isEmpty()) {
     throw ApiError.BadRequest(errors.array()[0].msg, []);
   }
@@ -24,23 +24,11 @@ class Authentication {
     next: NextFunction
   ): Promise<void> {
     try {
-      console.log("TRY");
       validateEmail(req);
 
       const user = await authService.createUser(req.body);
-      const tokens: ITokens = await authService.createTokens(req.body, user.id);
 
-      res.cookie("refreshToken", tokens.refreshToken, {
-        maxAge: MAX_AGE,
-        httpOnly: true,
-      });
-
-      const { accessToken, refreshToken } = tokens;
-
-      res.json({
-        user,
-        tokens: { accessToken, refreshToken },
-      });
+      res.json(user);
     } catch (e) {
       next(e);
     }
