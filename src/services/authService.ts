@@ -56,7 +56,7 @@ class AuthService {
 
     await mailService.sendActivationLink(
       email,
-      `${process.env.SERVER_URL}/api/auth/activate/${activationLink}`
+      `${process.env.API_URL}/api/auth/activate/${activationLink}`
     );
 
     return new UserDto(user);
