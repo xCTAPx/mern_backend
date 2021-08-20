@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import { authRoute } from "./routes";
 import { errorsMiddleware } from "./middlewares";
 import { mode } from "./utils";
@@ -17,6 +18,7 @@ const app = express();
 mongoose.set("useCreateIndex", true);
 
 // external middlewares
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
