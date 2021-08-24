@@ -1,4 +1,6 @@
 import { Router } from "express";
+import swaggerUI from "swagger-ui-express";
+import swaggerDocument from "../docs/swagger.json";
 import { VALIDATORS } from "../validation";
 import { authController } from "../controllers";
 import { authMiddleware } from "../middlewares";
@@ -6,6 +8,10 @@ import { authMiddleware } from "../middlewares";
 const router = Router();
 
 const { emailValidator, passwordValidator, nicknameValidator } = VALIDATORS;
+
+router.use("/api-docs", swaggerUI.serve);
+
+router.get("/api-docs", swaggerUI.setup(swaggerDocument, { explorer: true }));
 
 router.post(
   "/registration",

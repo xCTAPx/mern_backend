@@ -13,12 +13,20 @@ dotenv.config();
 
 const port = process.env.PORT || 5000;
 
+const CORS_OPTIONS = {
+  origin: "http://localhost:3000",
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
+
+const DOCS_URL = `${process.env.API_URL}/api/auth/api-docs`;
+
 const app = express();
 
 mongoose.set("useCreateIndex", true);
 
 // external middlewares
-app.use(cors());
+app.use(cors(CORS_OPTIONS));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
@@ -31,7 +39,12 @@ app.use(errorsMiddleware);
 
 app.get("/", (_request: Request, response: Response): void => {
   response.send(
-    `Backend part of application in development process now... (${mode} mode)`
+    `Backend part of application in development process now... (${mode} mode) </br>
+    <h4>Docs: </h4>
+    <ul>
+      <li>Auth: <a href="${DOCS_URL}">${DOCS_URL}</a></li>
+    </ul>
+    `
   );
 });
 
