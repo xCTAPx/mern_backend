@@ -1,0 +1,274 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "description": "This is a simple swagger documentation for mern backend application.",
+      "version": "0.0.1-alpha.1",
+      "title": "Mern_backend",
+      "contact": {
+        "email": "sdkurve@mail.ru"
+      }
+    },
+    "tags": [
+      {
+        "name": "auth",
+        "description": "Authentication api"
+      }
+    ],
+    "paths": {
+      "/registration": {
+        "post": {
+          "tags": [
+            "auth"
+          ],
+          "summary": "Sign up user to the system",
+          "description": "Sign up user and save he in data base",
+          "operationId": "registration",
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "User object that needs to be added to the system",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/User_registration"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+                "description": "successfully registration",
+                "schema": {
+                    "$ref": "#/definitions/User"
+                }
+            },
+            "400": {
+                "description": "Invalid input data"
+            }
+          }
+        }
+      },
+      "/login": {
+        "post": {
+          "tags": [
+            "auth"
+          ],
+          "summary": "Sign in user to the system",
+          "description": "Sign in user and save his session",
+          "operationId": "login",
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "User object that needs to be logined to the system",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/User_login"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+                "description": "successfully login",
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "user": {
+                            "$ref": "#/definitions/User"
+                        },
+                        "tokens": {
+                            "$ref": "#/definitions/Tokens"
+                        }
+                    }
+                }
+            },
+            "400": {
+                "description": "Invalid input data"
+            }
+          }
+        }
+      },
+      "/logout": {
+        "post": {
+          "tags": [
+            "auth"
+          ],
+          "summary": "Logout user from the system",
+          "description": "Logout user from the system and terminates session",
+          "operationId": "logout",
+          "parameters": [
+            {
+              "in": "cookies",
+              "name": "refreshToken",
+              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoie1widXNlcklkXCI6XCI2MTFmYjQxNDE3YmE4MTAwMTU2YmM0ZDhcIixcImVtYWlsXCI6XCJzdWRrdXJ2ZUBtYWlsLnJ1XCIsXCJuaWNrbmFtZVwiOlwieENUQVB4XCJ9IiwiaWF0IjoxNjI5ODExNzA1LCJleHAiOjE2MzI0MDM3MDV9.T-8k2YyCkbRF-sEO3m0VAc-mIprphE7dGOYZj2COhfk",
+              "description": "User object that needs to be log out of the system",
+              "required": true
+            }
+          ],
+          "responses": {
+            "200": {
+                "description": "successfully logout"
+            },
+            "400": {
+                "description": "Invalid input data"
+            }
+          }
+        }
+      },
+      "/activate/:link": {
+        "get": {
+          "tags": [
+            "auth"
+          ],
+          "summary": "Activate user in the system",
+          "description": "Activate user in the system setting isActivate flag to true",
+          "operationId": "activation",
+          "parameters": [
+            {
+              "in": "query",
+              "name": "link",
+              "example": "f4d74af5-97bd-4098-aa62-29540c7dadb5",
+              "description": "User object that needs to be activated in the system",
+              "required": true
+            }
+          ],
+          "responses": {
+            "200": {
+                "description": "successfully activated"
+            },
+            "400": {
+                "description": "Invalid input data"
+            }
+          }
+        }
+      },
+      "/refresh": {
+        "get": {
+          "tags": [
+            "auth"
+          ],
+          "summary": "Refresh access token",
+          "description": "Refresh access token via refresh token",
+          "operationId": "refresh",
+          "parameters": [
+            {
+              "in": "cookies",
+              "name": "refreshToken",
+              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoie1widXNlcklkXCI6XCI2MTFmYjQxNDE3YmE4MTAwMTU2YmM0ZDhcIixcImVtYWlsXCI6XCJzdWRrdXJ2ZUBtYWlsLnJ1XCIsXCJuaWNrbmFtZVwiOlwieENUQVB4XCJ9IiwiaWF0IjoxNjI5ODExNzA1LCJleHAiOjE2MzI0MDM3MDV9.T-8k2YyCkbRF-sEO3m0VAc-mIprphE7dGOYZj2COhfk",
+              "description": "User object that needs to stay in the system after long time",
+              "required": true
+            }
+          ],
+          "responses": {
+            "200": {
+                "description": "successfully refreshed",
+                "schema": {
+                    "$ref": "#/definitions/Tokens"
+                }
+            },
+            "400": {
+                "description": "Invalid input data"
+            }
+          }
+        }
+      }
+    },
+    "definitions": {
+      "Password": {
+        "type": "string",
+        "example": "12345678"
+      },
+      "Email": {
+        "type": "string",
+        "example": "example@gmail.com"
+      },
+      "Nickname": {
+        "type": "string",
+        "example": "Example"
+      },
+      "Identifier": {
+        "type": "string",
+        "example": "6124f2138daedb0015afcf84"
+      },
+      "Tokens": {
+        "type": "object",
+        "required": [
+            "accessToken",
+            "refreshToken"
+        ],
+        "properties": {
+            "accessToken": {
+                "type": "string",
+                "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoie1widXNlcklkXCI6XCI2MTFmYjQxNDE3YmE4MTAwMTU2YmM0ZDhcIixcImVtYWlsXCI6XCJzdWRrdXJ2ZUBtYWlsLnJ1XCIsXCJuaWNrbmFtZVwiOlwieENUQVB4XCJ9IiwiaWF0IjoxNjI5ODExNzA1LCJleHAiOjE2Mjk4MTUzMDV9.hxtjhYoOMxCFiXoslLA6ilqd8GhIk7eP3UJxqzkyZIE"
+            },
+            "refreshToken": {
+                "type": "string",
+                "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoie1widXNlcklkXCI6XCI2MTFmYjQxNDE3YmE4MTAwMTU2YmM0ZDhcIixcImVtYWlsXCI6XCJzdWRrdXJ2ZUBtYWlsLnJ1XCIsXCJuaWNrbmFtZVwiOlwieENUQVB4XCJ9IiwiaWF0IjoxNjI5ODExNzA1LCJleHAiOjE2MzI0MDM3MDV9.T-8k2YyCkbRF-sEO3m0VAc-mIprphE7dGOYZj2COhfk"
+            }
+        }
+      },
+      "User_registration": {
+        "type": "object",
+        "required": [
+          "email",
+          "nickname",
+          "password",
+          "passwordConfirmation"
+        ],
+        "properties": {
+          "email": {
+            "$ref": "#/definitions/Email"
+          },
+          "nickname": {
+            "$ref": "#/definitions/Nickname"
+          },
+          "password": {
+              "$ref": "#/definitions/Password"
+          },
+          "passwordConfirmation": {
+            "$ref": "#/definitions/Password"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "required": [
+          "email",
+          "nickname",
+          "id",
+          "isActivated"
+        ],
+        "properties": {
+          "email": {
+            "$ref": "#/definitions/Email"
+          },
+          "nickname": {
+            "$ref": "#/definitions/Nickname"
+          },
+          "id": {
+            "$ref": "#/definitions/Identifier"
+          },
+          "isActivated": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "User_login": {
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "example@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "12345678"
+          }
+        }
+      }
+    }
+  }
