@@ -5,16 +5,19 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import { authRoute } from "./routes";
 import { errorsMiddleware } from "./middlewares";
-import { mode } from "./utils";
+import { isProduction, mode } from "./utils";
 
 const URL_PREFIX = "/api";
 
 dotenv.config();
 
 const port = process.env.PORT || 5000;
+const origin_url = isProduction
+  ? "https://mern-frontend-app.herokuapp.com"
+  : "http://localhost:3000";
 
 const CORS_OPTIONS = {
-  origin: "http://localhost:3000",
+  origin: origin_url,
   credentials: true,
   optionsSuccessStatus: 200,
 };
