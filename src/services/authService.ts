@@ -52,12 +52,12 @@ class AuthService {
       activationLink,
     });
 
-    await user.save();
-
     await mailService.sendActivationLink(
       email,
       `${process.env.API_URL}/api/auth/activate/${activationLink}`
     );
+
+    await user.save();
 
     return new UserDto(user);
   }
