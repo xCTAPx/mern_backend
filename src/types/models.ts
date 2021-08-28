@@ -6,6 +6,8 @@ export type UserModelType = mongoose.Document & {
   nickname: string;
   isActivated: boolean;
   activationLink?: string;
+  resetToken?: string;
+  resetTokenExpiration?: number;
 };
 
 export type TokensModelType = mongoose.Document & {

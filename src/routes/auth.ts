@@ -25,6 +25,14 @@ router.post("/login", emailValidator, passwordValidator, authController.login);
 
 router.post("/logout", authController.logout);
 
+router.post("/restore", emailValidator, authController.restore);
+
+router.put(
+  "/createNewPassword",
+  passwordValidator,
+  authController.createNewPassword
+);
+
 router.get("/activate/:link", authController.activate);
 
 router.get("/refresh", authController.refresh);

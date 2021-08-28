@@ -31,6 +31,19 @@ class MailService {
       `,
     });
   }
+
+  async sendResetPasswordLink(to: string, link: string): Promise<void> {
+    await this.transporter.sendMail({
+      from: process.env.SMTP_USER,
+      to,
+      subject: "Restoring password",
+      html: `
+        <h3>Restore your password</h3>
+        <p>For reset your password and creating a new one follow the lick below:</p>
+        <a href="${link}" target="_blank" rel="noopener noreferrer">${link}</a>
+      `,
+    });
+  }
 }
 
 export const mailService = new MailService();

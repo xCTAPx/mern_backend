@@ -18,6 +18,8 @@ dotenv.config();
 
 type TokenType = "access" | "refresh";
 
+const RESET_TOKEN_EXPIRATION_TIME = 3600 * 1000;
+
 const JwtSecretAccess = process.env.ACCESS_TOKEN_SECRET;
 const JwtSecretRefresh = process.env.REFRESH_TOKEN_SECRET;
 
@@ -114,9 +116,60 @@ class AuthService {
   async logout(refreshToken: string): Promise<void> {
     const token = await TokensModel.findOne({ refreshToken });
 
-    if (!token) throw ApiError.BadRequest("User is not authorized", []);
+    if (!token) throw ApiError.UnauthorizedError();
 
     await TokensModel.deleteOne({ refreshToken });
+  }
+
+  async restore(email: string): Promise<void> {
+    const user = await UserModel.findOne({ email });
+
+    if (!user) throw ApiError.BadRequest("User is not found", []);
+
+    const generatedToken = await bcrypt.hash(
+      `${email}${process.env.REFRESH_TOKEN_SECRET}`,
+      4
+    );
+
+    const resetToken = generatedToken.replace(/\//g, "");
+
+    user.resetToken = resetToken;
+    user.resetTokenExpiration = Date.now() + RESET_TOKEN_EXPIRATION_TIME;
+
+    await user.save();
+
+    await mailService.sendResetPasswordLink(
+      email,
+      `${process.env.CLIENT_URL}/auth/restore/${resetToken}`
+    );
+  }
+
+  async createNewPassword(
+    token: string,
+    password: string,
+    passwordConfirmation: string
+  ): Promise<void> {
+    const user = await UserModel.findOne({
+      resetToken: token,
+      resetTokenExpiration: { $gt: Date.now() },
+    });
+
+    if (!user)
+      throw ApiError.BadRequest(
+        "User is not found or reset token has been exired",
+        []
+      );
+
+    if (password !== passwordConfirmation)
+      throw ApiError.BadRequest("Password confirmation is wrong", []);
+
+    const hashPassword = await bcrypt.hash(password, 4);
+
+    user.password = hashPassword;
+    user.resetToken = undefined;
+    user.resetTokenExpiration = undefined;
+
+    await user.save();
   }
 
   async verifyToken(token: string, type: TokenType): Promise<void> {

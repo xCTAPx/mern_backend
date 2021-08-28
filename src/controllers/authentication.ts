@@ -9,7 +9,7 @@ dotenv.config();
 
 const MAX_AGE = 30 * 24 * 60 * 60 * 1000;
 
-const validateEmail = (req: Request): void => {
+const validate = (req: Request): void => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -24,7 +24,7 @@ class Authentication {
     next: NextFunction
   ): Promise<void> {
     try {
-      validateEmail(req);
+      validate(req);
 
       const user = await authService.createUser(req.body);
 
@@ -36,7 +36,7 @@ class Authentication {
 
   async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      validateEmail(req);
+      validate(req);
 
       const user = await authService.login(req.body);
 
@@ -62,6 +62,44 @@ class Authentication {
       const { refreshToken } = req.cookies;
       await authService.logout(refreshToken);
       res.clearCookie("refreshToken");
+      return res.end();
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  async restore(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      validate(req);
+      const { email } = req.body;
+
+      await authService.restore(email);
+
+      return res.end();
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  async createNewPassword(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      validate(req);
+      const { resetToken, password, passwordConfirmation } = req.body;
+
+      await authService.createNewPassword(
+        resetToken,
+        password,
+        passwordConfirmation
+      );
+
       return res.end();
     } catch (e) {
       next(e);
