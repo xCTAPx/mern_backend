@@ -20,6 +20,8 @@ const userSchema = new Schema({
     default: false,
   },
   activationLink: String,
+  resetToken: String,
+  resetTokenExpiration: Date,
 });
 
 export const UserModel = model<UserModelType>("User", userSchema);

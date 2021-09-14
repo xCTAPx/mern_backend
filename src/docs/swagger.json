@@ -114,6 +114,64 @@
           }
         }
       },
+      "/restore": {
+        "post": {
+          "tags": [
+            "auth"
+          ],
+          "summary": "Let user change his password",
+          "description": "Let user change his password in the system ",
+          "operationId": "restore",
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "Email of user that needs to be restore his password in the system",
+              "schema": {
+                "$ref": "#/definitions/Password_restore"
+              },
+              "required": true
+            }
+          ],
+          "responses": {
+            "200": {
+                "description": "link for password restoring has been sent"
+            },
+            "400": {
+                "description": "Invalid input data"
+            }
+          }
+        }
+      },
+      "/createNewPassword": {
+        "put": {
+          "tags": [
+            "auth"
+          ],
+          "summary": "Let user change his password",
+          "description": "Let user change his password in the system ",
+          "operationId": "createNewPassword",
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "Email of user that needs to be restore his password in the system",
+              "schema": {
+                "$ref": "#/definitions/Password_createNew"
+              },
+              "required": true
+            }
+          ],
+          "responses": {
+            "200": {
+                "description": "password has been successfully changed"
+            },
+            "400": {
+                "description": "Invalid input data"
+            }
+          }
+        }
+      },
       "/activate/:link": {
         "get": {
           "tags": [
@@ -180,6 +238,10 @@
       "Email": {
         "type": "string",
         "example": "example@gmail.com"
+      },
+      "ResetToken": {
+        "type": "string",
+        "example": "$2b$04$eoafSJgrYkEmnZcSNFNEqeMT6.t0Tlj41jbje572qqBaYdxfHav0o"
       },
       "Nickname": {
         "type": "string",
@@ -267,6 +329,36 @@
           "password": {
             "type": "string",
             "example": "12345678"
+          }
+        }
+      },
+      "Password_restore": {
+        "type": "object",
+        "required": [
+          "email"
+        ],
+        "properties": {
+          "email": {
+            "$ref": "#/definitions/Email"
+          }
+        }
+      },
+      "Password_createNew": {
+        "type": "object",
+        "required": [
+          "resetToken",
+          "password",
+          "passwordConfirmation"
+        ],
+        "properties": {
+          "resetToken": {
+            "$ref": "#/definitions/ResetToken"
+          },
+          "password": {
+              "$ref": "#/definitions/Password"
+          },
+          "passwordConfirmation": {
+            "$ref": "#/definitions/Password"
           }
         }
       }
