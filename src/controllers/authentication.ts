@@ -1,5 +1,10 @@
 import dotenv from "dotenv";
-import { Request, Response, NextFunction } from "express";
+import {
+  Request,
+  Response,
+  NextFunction,
+  CookieOptions,
+} from "express";
 import { validationResult } from "express-validator";
 import { authService } from "../services";
 import { ApiError } from "../exceptions";
@@ -8,6 +13,12 @@ import { ITokens } from "../types";
 dotenv.config();
 
 const MAX_AGE = 30 * 24 * 60 * 60 * 1000;
+const REFRESH_TOKEN_COOKIE_CONFIG: CookieOptions = {
+  maxAge: MAX_AGE,
+  httpOnly: true,
+  sameSite: "none",
+  secure: true,
+};
 
 const validate = (req: Request): void => {
   const errors = validationResult(req);
@@ -49,11 +60,11 @@ class Authentication {
       const tokens: ITokens =
         await authService.createTokens(req.body, user.id);
 
-      res.cookie("refreshToken", tokens.refreshToken, {
-        maxAge: MAX_AGE,
-        httpOnly: true,
-        sameSite: "none",
-      });
+      res.cookie(
+        "refreshToken",
+        tokens.refreshToken,
+        REFRESH_TOKEN_COOKIE_CONFIG
+      );
 
       const { accessToken, refreshToken } = tokens;
 
@@ -153,11 +164,12 @@ class Authentication {
       const { accessToken, refreshToken: newRefreshToken } =
         tokens;
 
-      res.cookie("refreshToken", tokens.refreshToken, {
-        maxAge: MAX_AGE,
-        httpOnly: true,
-        sameSite: "none",
-      });
+      res.cookie(
+        "refreshToken",
+        tokens.refreshToken,
+        REFRESH_TOKEN_COOKIE_CONFIG
+      );
+
       res.json({
         accessToken,
         refreshToken: newRefreshToken,
