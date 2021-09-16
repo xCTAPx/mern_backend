@@ -52,6 +52,7 @@ class Authentication {
       res.cookie("refreshToken", tokens.refreshToken, {
         maxAge: MAX_AGE,
         httpOnly: true,
+        sameSite: "none",
       });
 
       const { accessToken, refreshToken } = tokens;
@@ -155,6 +156,7 @@ class Authentication {
       res.cookie("refreshToken", tokens.refreshToken, {
         maxAge: MAX_AGE,
         httpOnly: true,
+        sameSite: "none",
       });
       res.json({
         accessToken,

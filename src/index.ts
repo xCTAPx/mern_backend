@@ -40,16 +40,19 @@ app.use(`${URL_PREFIX}/auth`, authRoute);
 // internal middlewares
 app.use(errorsMiddleware);
 
-app.get("/", (_request: Request, response: Response): void => {
-  response.send(
-    `Backend part of application in development process now... (${mode} mode) </br>
+app.get(
+  "/",
+  (_request: Request, response: Response): void => {
+    response.send(
+      `Backend part of application in development process now... (${mode} mode) </br>
     <h4>Docs: </h4>
     <ul>
       <li>Auth: <a href="${DOCS_URL}">${DOCS_URL}</a></li>
     </ul>
     `
-  );
-});
+    );
+  }
+);
 
 const startApp = async () => {
   await mongoose.connect(process.env.DB_URL, {
@@ -57,7 +60,9 @@ const startApp = async () => {
     useUnifiedTopology: true,
   });
 
-  app.listen(port, () => console.log(`Server has been started. Port: ${port}`));
+  app.listen(port, () =>
+    console.log(`Server has been started. Port: ${port}`)
+  );
 };
 
 startApp();
