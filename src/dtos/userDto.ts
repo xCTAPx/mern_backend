@@ -1,5 +1,3 @@
-import { UserModelType } from "../types";
-
 export class UserDto {
   email: string;
   nickname: string;

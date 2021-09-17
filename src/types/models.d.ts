@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+type MongooseDocument = import("mongoose").Document;
 
-export type UserModelType = mongoose.Document & {
+declare type UserModelType = MongooseDocument & {
   email: string;
   password: string;
   nickname: string;
@@ -10,7 +10,7 @@ export type UserModelType = mongoose.Document & {
   resetTokenExpiration?: number;
 };
 
-export type TokensModelType = mongoose.Document & {
+declare type TokensModelType = MongooseDocument & {
   accessToken: string;
   refreshToken: string;
   user: string;

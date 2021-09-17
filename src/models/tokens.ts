@@ -1,5 +1,4 @@
 import { Schema, model } from "mongoose";
-import { TokensModelType } from "../types";
 
 const tokensSchema = new Schema({
   accessToken: {
@@ -17,4 +16,7 @@ const tokensSchema = new Schema({
   },
 });
 
-export const TokensModel = model<TokensModelType>("Tokens", tokensSchema);
+export const TokensModel = model<TokensModelType>(
+  "Tokens",
+  tokensSchema
+);

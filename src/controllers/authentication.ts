@@ -8,7 +8,6 @@ import {
 import { validationResult } from "express-validator";
 import { authService } from "../services";
 import { ApiError } from "../exceptions";
-import { ITokens } from "../types";
 
 dotenv.config();
 

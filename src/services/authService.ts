@@ -6,13 +6,6 @@ import { UserModel, TokensModel } from "../models";
 import { ApiError } from "../exceptions";
 import { mailService } from "../services";
 import { UserDto } from "../dtos";
-import {
-  ICreateTokensData,
-  ILoginData,
-  IRegisterData,
-  ITokens,
-  UserModelType,
-} from "../types";
 
 dotenv.config();
 

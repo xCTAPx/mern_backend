@@ -1,5 +1,4 @@
 import { Schema, model } from "mongoose";
-import { UserModelType } from "../types";
 
 const userSchema = new Schema({
   email: {
@@ -24,4 +23,7 @@ const userSchema = new Schema({
   resetTokenExpiration: Date,
 });
 
-export const UserModel = model<UserModelType>("User", userSchema);
+export const UserModel = model<UserModelType>(
+  "User",
+  userSchema
+);
